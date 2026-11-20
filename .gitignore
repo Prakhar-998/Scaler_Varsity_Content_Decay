@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+.venv/
+service_account.json
+*.xlsx
+data/
+.env

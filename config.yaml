@@ -1,0 +1,85 @@
+# Varsity Content Health — all thresholds live here. Edit and push; next run picks them up.
+
+gsc:
+  site_url: "https://www.interviewbit.com/varsity/blog/"   # GSC property (URL-prefix)
+  history_days: 120          # days pulled each run (needs >= 60 + 60 for window comparisons)
+  data_lag_days: 3           # GSC "final" data lags ~2-3 days; end date = today - lag
+  search_type: web
+
+pages:
+  include_prefix: "https://www.interviewbit.com/varsity/blog/"
+  exclude_patterns:           # archive / listing pages, not articles
+    - "/tag/"
+    - "/category/"
+    - "/author/"
+    - "/page/"
+  exclude_exact:
+    - "https://www.interviewbit.com/varsity/blog/"
+
+windows: [7, 14, 30, 60]      # trajectory windows (days)
+
+trend:
+  window: 30                  # main trend label uses this window vs the prior equal window
+  short_window: 14            # short-term label for early warning
+  change_pct: 20              # +/- % vs prior window to call Rising / Declining
+  min_clicks: 10              # below this (current + prior window) the click trend uses impressions instead
+  min_impressions: 200
+  new_page_days: 30           # pages first seen less than this ago are labelled "New (ramping)"
+
+tiers:
+  relative:                   # percentile of 30d avg clicks/day among pages with clicks
+    - {name: "Top 10%", pct: 90}
+    - {name: "Top 25%", pct: 75}
+  absolute:                   # clicks/day (30d avg); highest match wins; light up as traffic grows
+    - {name: "100+/day", min: 100}
+    - {name: "50+/day", min: 50}
+    - {name: "30+/day", min: 30}
+
+decay:                        # PA-06 rules
+  window: 28                  # last 28d vs prior 28d
+  min_prior_clicks: 50
+  min_prior_impressions: 500
+  drop_pct: 25
+  min_clicks_for_click_drop: 20   # below this, the drop is judged on impressions (clicks too noisy)
+  skip_refreshed_days: 45
+  max_per_week: 10
+
+early_warning:                # smaller pages sliding on both clicks and impressions
+  window: 14
+  min_prior_clicks: 10
+  drop_pct: 25
+
+opportunity:                  # "impressions up, clicks lagging" (the KIRO AI pattern)
+  window: 14
+  min_impressions_per_day: 50
+  max_position: 10
+  ctr_ratio_below: 0.5        # flag if actual CTR < 50% of expected CTR for its position
+  # expected CTR by average position (rough organic curve; tune to your own GSC averages)
+  expected_ctr:
+    - {max_pos: 1.5, ctr: 0.25}
+    - {max_pos: 2.5, ctr: 0.15}
+    - {max_pos: 3.5, ctr: 0.10}
+    - {max_pos: 5.5, ctr: 0.06}
+    - {max_pos: 10.5, ctr: 0.025}
+    - {max_pos: 20.5, ctr: 0.01}
+    - {max_pos: 999, ctr: 0.002}
+
+striking_distance:
+  min_position: 8
+  max_position: 20
+  min_impressions_per_day: 30
+
+monthly_scope:
+  top_n: 15
+
+refresh_measure_days: 28      # before/after window for logged refreshes
+
+sheet:
+  spreadsheet_id: ""          # or set env SHEET_ID
+  tabs:
+    summary: "Summary"
+    trajectory: "Trajectory"
+    flags: "Flags"
+    scope: "Monthly Scope"
+    refresh_log: "Refresh Log"
+    daily: "Daily (wide)"
