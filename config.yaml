@@ -83,3 +83,6 @@ sheet:
     scope: "Monthly Scope"
     refresh_log: "Refresh Log"
     daily: "Daily (wide)"
+
+slack:
+  chart: true                 # 60-day blog clicks chart via quickchart.io (sends only daily totals, no URLs)

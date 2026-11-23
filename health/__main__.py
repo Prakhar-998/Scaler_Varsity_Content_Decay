@@ -85,7 +85,8 @@ def main(argv=None):
         print(f"[sheet] updated https://docs.google.com/spreadsheets/d/{sheet_id}")
         if a.slack or today.weekday() == 0:
             url = f"https://docs.google.com/spreadsheets/d/{sheet_id}"
-            print("[slack] sent" if slack.send(slack.message(out, url)) else "[slack] no webhook set")
+            chart = cfg.get("slack", {}).get("chart", True)
+            print("[slack] sent" if slack.send(out, url, chart) else "[slack] no webhook set")
     else:
         h, rows = traj_x
         print("\n".join(" | ".join(str(c) for c in r[:8]) for r in [h] + rows[:10]))
