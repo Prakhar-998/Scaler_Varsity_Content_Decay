@@ -122,7 +122,7 @@ def blocks(out: dict, sheet_url: str = "", chart: bool = True) -> list[dict]:
     n_attention = f["page"].nunique() if len(f) else 0
 
     b: list[dict] = [
-        {"type": "header", "text": {"type": "plain_text", "text": "📈 Varsity Content Health — weekly", "emoji": True}},
+        {"type": "header", "text": {"type": "plain_text", "text": "Varsity Content Health — Weekly Report"}},
         {"type": "context", "elements": [{"type": "mrkdwn", "text": f"Google Search Console data through *{end}* · {len(t)} articles tracked"}]},
         {"type": "section", "fields": [
             {"type": "mrkdwn", "text": f"*Clicks · last 7 days*\n{int(tt['c7']):,}  {_pct(tt['c7'], tt['p7'])}"},
@@ -143,15 +143,15 @@ def blocks(out: dict, sheet_url: str = "", chart: bool = True) -> list[dict]:
     up = m[m["delta"] > 0].sort_values("delta", ascending=False).head(MAX_ITEMS)
     if len(up):
         lines = [f"• {_link(r.page)} — *{r.clicks_per_day_7d:.1f}* clicks/day (+{r.delta:.1f})" for r in up.itertuples()]
-        b.append(_section("🚀 *Top movers this week*", lines))
+        b.append(_section("*Top movers this week*", lines))
     if chart:
         b.append({"type": "image", "image_url": chart_top_articles(t), "alt_text": "Top articles this week vs last week"})
 
     groups = [
-        ("Decay", "🔻 *Decaying* — refresh candidates"),
-        ("Early warning", "⚠️ *Early warning* — clicks sliding"),
-        ("Low CTR for position", "👀 *Seen but not clicked* — rewrite title/meta"),
-        ("Striking distance", "🎯 *Striking distance* — positions 8–20"),
+        ("Decay", "*Decaying* — refresh candidates"),
+        ("Early warning", "*Early warning* — clicks sliding"),
+        ("Low CTR for position", "*High impressions, low CTR* — rewrite title/meta"),
+        ("Striking distance", "*Striking distance* — positions 8–20"),
     ]
     for flag, title in groups:
         g = f[f["flag"] == flag].head(MAX_ITEMS) if len(f) else f
